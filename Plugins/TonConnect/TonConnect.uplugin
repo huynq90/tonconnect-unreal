@@ -22,14 +22,14 @@
 		{
 			"Name": "TonConnect",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"WhitelistPlatforms": ["Win64", "Android", "IOS"]
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": ["Win64", "Android", "IOS"]
 		},
 		{
 			"Name": "TonConnectEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": ["Win64"]
+			"PlatformAllowList": ["Win64"]
 		}
 	]
 }
