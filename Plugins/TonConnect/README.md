@@ -50,11 +50,12 @@ wallet or network needed) or against a real wallet.
 
 ### 1. Make plugin content visible
 
-Plugin content is hidden in the Content Browser by default:
+Plugin content is hidden by default:
 
-> Content Browser → **Settings** (gear, top-right) → enable **Show Plugin Content**
+> Open the **Content Drawer** (bottom of the window) → click the **Settings** gear
+> (bottom-right of the drawer) → tick **Show Plugin Content**
 
-Then browse to **Plugins → TonConnect Content → Maps**. You'll see:
+Then browse to **TonConnect Content → Maps**. You'll see:
 
 | Map | Demo actor | What it shows |
 |---|---|---|
