@@ -458,7 +458,6 @@ void AMyHud::HandleSendResult(const FTonSendResult& R)
 | `GetBalance` | TON balance in nanoTON |
 | `GetJettonBalances` | All jetton holdings with symbol, decimals, wallet address |
 | `GetNfts` | NFT items with collection address and metadata name |
-| `GetHistory` | Recent transaction events |
 | `CallGetMethod` | Read-only smart contract method call, returns typed stack |
 
 ### Contract ABI
@@ -476,7 +475,7 @@ void AMyHud::HandleSendResult(const FTonSendResult& R)
 |---|---|
 | Mock mode | `-ton.mock` CLI flag or `Use Mock = true` in Developer Settings |
 | Mock bridge | Auto-approves or auto-rejects after a configurable delay |
-| Mock API | Fixture wallet list, USDT jetton, NFT item, tx history, seqno + emulate |
+| Mock API | Fixture wallet list, USDT jetton, NFT item, seqno + emulate |
 | `UTonConnectDeveloperSettings` | Project Settings → TonConnect → network endpoint, connect timeout, mock toggle |
 
 ---
