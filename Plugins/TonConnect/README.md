@@ -53,7 +53,7 @@ wallet or network needed) or against a real wallet.
 Plugin content is hidden by default:
 
 > Open the **Content Drawer** (bottom of the window) → click the **Settings** gear
-> (bottom-right of the drawer) → tick **Show Plugin Content**
+> (top-right of the drawer) → tick **Show Plugin Content**
 
 Then browse to **TonConnect Content → Maps**. You'll see:
 

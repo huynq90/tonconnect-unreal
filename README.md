@@ -34,7 +34,7 @@ third-party code — **no prebuilt `.lib`, no npm, no backend required.**
 2. Right-click `UETonConnectExample.uproject` → **Generate Visual Studio project files**.
 3. Open the `.sln`, build **Development Editor**, then open the `.uproject`.
 4. The demo maps live in the **plugin's** content. Open the **Content Drawer** →
-   **Settings** gear (bottom-right) → tick **Show Plugin Content**. Then open a map
+   **Settings** gear (top-right) → tick **Show Plugin Content**. Then open a map
    (under *TonConnect Content → Maps*) and press **Play**:
    - **`TonConnectUIExample`** ⭐ — pop-up wallet UI (Connect → QR → Send → Disconnect).
    - **`TonConnectExample`** — keyboard-driven demo (keys 1–4).
