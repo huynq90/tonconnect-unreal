@@ -1,0 +1,27 @@
+// TEP-89: Discoverable Jettons Wallets + Voting extension
+// Common governance/DAO messages used by DeDust, STON.fi, and other protocols.
+
+// Cast a vote in a DAO proposal (jetton-weighted).
+vote#69fb306c query_id:uint64
+              proposal_id:uint32
+              choice:uint8
+              = InternalMsgBody;
+
+// Delegate voting power to another address.
+delegate_voting_power#7ccd1eef query_id:uint64
+                               delegate:MsgAddress
+                               = InternalMsgBody;
+
+// Revoke delegated voting power (reclaim your own votes).
+revoke_delegation#4c573f6c query_id:uint64 = InternalMsgBody;
+
+// Lock jettons into a governance vault for voting power.
+lock_for_voting#4b4a0b2e query_id:uint64
+                         amount:(VarUInteger 16)
+                         unlock_time:uint32
+                         = InternalMsgBody;
+
+// Withdraw locked jettons after the unlock_time has passed.
+withdraw_locked#5ae30166 query_id:uint64
+                          amount:(VarUInteger 16)
+                          = InternalMsgBody;

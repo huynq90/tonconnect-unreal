@@ -1,0 +1,52 @@
+{
+  "name": "JettonDefaultWallet",
+  "messages": [
+    {
+      "name": "TokenTransfer",
+      "opcode": "0xf8a7ea5",
+      "fields": [
+        { "name": "queryId",              "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "amount",               "type": { "kind": "simple", "type": "coins"  } },
+        { "name": "destination",          "type": { "kind": "simple", "type": "Address" } },
+        { "name": "responseDestination",  "type": { "kind": "simple", "type": "Address" } },
+        { "name": "forwardTonAmount",     "type": { "kind": "simple", "type": "coins"  } }
+      ]
+    },
+    {
+      "name": "TokenTransferInternal",
+      "opcode": "0x178d4519",
+      "fields": [
+        { "name": "queryId",             "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "amount",              "type": { "kind": "simple", "type": "coins"  } },
+        { "name": "from",                "type": { "kind": "simple", "type": "Address" } },
+        { "name": "responseAddress",     "type": { "kind": "simple", "type": "Address" } },
+        { "name": "forwardTonAmount",    "type": { "kind": "simple", "type": "coins"  } }
+      ]
+    },
+    {
+      "name": "TokenBurn",
+      "opcode": "0x595f07bc",
+      "fields": [
+        { "name": "queryId",              "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "amount",               "type": { "kind": "simple", "type": "coins"   } },
+        { "name": "responseDestination",  "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "TokenNotification",
+      "opcode": "0x7362d09c",
+      "fields": [
+        { "name": "queryId",  "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "amount",   "type": { "kind": "simple", "type": "coins"   } },
+        { "name": "from",     "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "TokenExcesses",
+      "opcode": "0xd53276db",
+      "fields": [
+        { "name": "queryId", "type": { "kind": "simple", "type": "uint64" } }
+      ]
+    }
+  ]
+}

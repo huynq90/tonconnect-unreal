@@ -1,0 +1,40 @@
+// TEP-74: Fungible Tokens (Jettons) — https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md
+// Drag this file into the UE Content Browser to import as UTonMessageSpec assets.
+// Fields marked "(Maybe ^Cell)" and "(Either Cell ^Cell)" are skipped by the TL-B parser
+// as they require runtime branching — handle them manually in code if needed.
+
+// Send jettons from your wallet contract to a destination.
+// WalletAddress = YOUR jetton wallet address (from GetJettonBalances.WalletAddress).
+// Gas: at least 0.05 TON; add 0.1 TON more if forwarding a comment.
+transfer#0f8a7ea5 query_id:uint64
+                  amount:(VarUInteger 16)
+                  destination:MsgAddress
+                  response_destination:MsgAddress
+                  forward_ton_amount:(VarUInteger 16)
+                  = InternalMsgBody;
+
+// Sent by the jetton wallet to the new owner after a successful transfer.
+transfer_notification#7362d09c query_id:uint64
+                               amount:(VarUInteger 16)
+                               sender:MsgAddress
+                               = InternalMsgBody;
+
+// Returned excess TON to response_destination after any jetton operation.
+excesses#d53276db query_id:uint64 = InternalMsgBody;
+
+// Burn jettons permanently (reduce total supply).
+burn#595f07bc query_id:uint64
+              amount:(VarUInteger 16)
+              response_destination:MsgAddress
+              = InternalMsgBody;
+
+// Request the jetton master to tell you which wallet address owns a given account.
+provide_wallet_address#2c76b973 query_id:uint64
+                                owner_address:MsgAddress
+                                include_address:Bool
+                                = InternalMsgBody;
+
+// Response to provide_wallet_address.
+take_wallet_address#d1735400 query_id:uint64
+                             wallet_address:MsgAddress
+                             = InternalMsgBody;

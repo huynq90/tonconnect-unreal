@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1.0",
+	"FriendlyName": "TonConnect",
+	"Description": "TON Wallet integration for Unreal Engine via TON Connect protocol",
+	"Category": "Blockchain",
+	"CreatedBy": "",
+	"DocsURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Plugins": [
+		{
+			"Name": "Gauntlet",
+			"Enabled": true
+		}
+	],
+	"Modules": [
+		{
+			"Name": "TonConnect",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": ["Win64", "Android", "IOS"]
+		},
+		{
+			"Name": "TonConnectEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": ["Win64"]
+		}
+	]
+}

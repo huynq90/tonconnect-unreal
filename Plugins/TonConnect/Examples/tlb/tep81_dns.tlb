@@ -1,0 +1,21 @@
+// TEP-81: DNS Standard — https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md
+// Subdomain resolution and auction messages for .ton domains.
+
+// Change the DNS record owner (auction winner claims ownership).
+change_dns_record#4eb1f0f9 query_id:uint64
+                           key:uint256
+                           = InternalMsgBody;
+
+// Fill-up bid — increase your bid in an ongoing auction.
+fill_up#370fec51 query_id:uint64 = InternalMsgBody;
+
+// Place an initial bid or outbid the current winner.
+place_bid#93b12a0b query_id:uint64 = InternalMsgBody;
+
+// Finalize an auction after the bidding period ends.
+finalize_auction#a9e74f41 query_id:uint64 = InternalMsgBody;
+
+// Request subdomain resolution (sent to a DNS contract).
+dns_resolve_request#693d3950 query_id:uint64
+                             subdomain_bits:uint8
+                             = InternalMsgBody;

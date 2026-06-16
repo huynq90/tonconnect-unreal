@@ -1,0 +1,36 @@
+# Unreal Engine generated / build output
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+
+# Plugin build output (keep plugin source, ignore compiled artifacts)
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# Claude Code local config
+.claude/
+
+# IDE / project files (regenerated from .uproject + *.Build.cs)
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.opendb
+*.sdf
+*.DotSettings.user
+.idea/
+
+# OS noise
+.DS_Store
+Thumbs.db
+*~
+*.swp
+
+# Diversion local metadata (leftover; project is now git-only)
+.dv/
+.dvignore

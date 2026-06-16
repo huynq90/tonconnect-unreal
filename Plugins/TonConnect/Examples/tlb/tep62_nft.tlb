@@ -1,0 +1,28 @@
+// TEP-62: NFT Standard — https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md
+// Drag this file into the UE Content Browser to import as UTonMessageSpec assets.
+
+// Transfer NFT item ownership to new_owner.
+// Send to: the NFT item contract address (from GetNfts.Address).
+// Gas: 0.05 TON minimum.
+transfer#5fcc3d14 query_id:uint64
+                  new_owner:MsgAddress
+                  response_destination:MsgAddress
+                  forward_amount:(VarUInteger 16)
+                  = InternalMsgBody;
+
+// Notification sent to new_owner after a successful transfer.
+ownership_assigned#05138d91 query_id:uint64
+                            prev_owner:MsgAddress
+                            = InternalMsgBody;
+
+// Returned excess gas after any NFT operation.
+excesses#d53276db query_id:uint64 = InternalMsgBody;
+
+// Request on-chain index + collection address from the item contract.
+get_static_data#2fcb26a2 query_id:uint64 = InternalMsgBody;
+
+// Response to get_static_data.
+report_static_data#8b771735 query_id:uint64
+                            index:uint256
+                            collection:MsgAddress
+                            = InternalMsgBody;

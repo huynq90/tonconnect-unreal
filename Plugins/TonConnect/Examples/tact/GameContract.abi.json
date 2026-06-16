@@ -1,0 +1,52 @@
+{
+  "name": "TonGameContract",
+  "_comment": "Example on-chain game contract. Deploy your own or adapt to your contract's actual opcodes.",
+  "messages": [
+    {
+      "name": "RegisterPlayer",
+      "opcode": "0x00000001",
+      "fields": [
+        { "name": "playerId",    "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "playerAddr",  "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "UpdateScore",
+      "opcode": "0x00000002",
+      "fields": [
+        { "name": "playerId",   "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "score",      "type": { "kind": "simple", "type": "uint32" } },
+        { "name": "timestamp",  "type": { "kind": "simple", "type": "uint32" } }
+      ]
+    },
+    {
+      "name": "ClaimReward",
+      "opcode": "0x00000003",
+      "fields": [
+        { "name": "playerId",    "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "rewardTier",  "type": { "kind": "simple", "type": "uint8"  } },
+        { "name": "destination", "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "PurchaseItem",
+      "opcode": "0x00000004",
+      "fields": [
+        { "name": "playerId",  "type": { "kind": "simple", "type": "uint64" } },
+        { "name": "itemId",    "type": { "kind": "simple", "type": "uint32" } },
+        { "name": "quantity",  "type": { "kind": "simple", "type": "uint16" } },
+        { "name": "payment",   "type": { "kind": "simple", "type": "coins"  } }
+      ]
+    },
+    {
+      "name": "TransferItem",
+      "opcode": "0x00000005",
+      "fields": [
+        { "name": "fromPlayerId", "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "toAddr",       "type": { "kind": "simple", "type": "Address" } },
+        { "name": "itemId",       "type": { "kind": "simple", "type": "uint32"  } },
+        { "name": "quantity",     "type": { "kind": "simple", "type": "uint16"  } }
+      ]
+    }
+  ]
+}

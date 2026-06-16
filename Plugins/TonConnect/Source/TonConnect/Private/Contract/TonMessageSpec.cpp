@@ -1,0 +1,1 @@
+#include "Contract/TonMessageSpec.h"

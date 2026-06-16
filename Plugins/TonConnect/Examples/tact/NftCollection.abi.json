@@ -1,0 +1,51 @@
+{
+  "name": "NftCollection",
+  "_comment": "TEP-62 NFT Collection + Item messages in Tact ABI format.",
+  "messages": [
+    {
+      "name": "Transfer",
+      "opcode": "0x5fcc3d14",
+      "fields": [
+        { "name": "queryId",              "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "newOwner",             "type": { "kind": "simple", "type": "Address" } },
+        { "name": "responseDestination",  "type": { "kind": "simple", "type": "Address" } },
+        { "name": "forwardAmount",        "type": { "kind": "simple", "type": "coins"   } }
+      ]
+    },
+    {
+      "name": "OwnershipAssigned",
+      "opcode": "0x05138d91",
+      "fields": [
+        { "name": "queryId",    "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "prevOwner",  "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "GetStaticData",
+      "opcode": "0x2fcb26a2",
+      "fields": [
+        { "name": "queryId", "type": { "kind": "simple", "type": "uint64" } }
+      ]
+    },
+    {
+      "name": "ReportStaticData",
+      "opcode": "0x8b771735",
+      "fields": [
+        { "name": "queryId",    "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "index",      "type": { "kind": "simple", "type": "uint256" } },
+        { "name": "collection", "type": { "kind": "simple", "type": "Address" } }
+      ]
+    },
+    {
+      "name": "Mint",
+      "opcode": "0x00000001",
+      "_comment": "Custom opcode — replace with your collection's actual mint opcode",
+      "fields": [
+        { "name": "queryId",     "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "itemIndex",   "type": { "kind": "simple", "type": "uint64"  } },
+        { "name": "recipient",   "type": { "kind": "simple", "type": "Address" } },
+        { "name": "mintValue",   "type": { "kind": "simple", "type": "coins"   } }
+      ]
+    }
+  ]
+}
