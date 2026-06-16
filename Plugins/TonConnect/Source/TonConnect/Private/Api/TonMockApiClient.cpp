@@ -76,6 +76,7 @@ void FTonMockApiClient::GetTransaction(const FString& TxHash,
 }
 
 void FTonMockApiClient::CallGetMethod(const FString& /*Address*/, const FString& /*Method*/,
+                                       const TArray<FString>& /*Args*/,
                                        TFunction<void(bool, TMap<FString,FString>)> Callback)
 {
     TMap<FString,FString> Stack;

@@ -94,11 +94,12 @@ public:
     void WaitForTransaction(const FString& TxHash, float TimeoutSec,
                             TFunction<void(bool bFound, FTonTxEntry)> OnResult);
 
-    // Call a smart-contract get-method (read-only, no signing required).
+    // Call a smart-contract get-method (read-only — no gas, no signing, no wallet needed).
+    // Args are TVM stack inputs (decimal numbers or addresses); leave empty for no-arg methods.
     // Stack values returned indexed "0","1",… as decimal strings or BOC base64.
     UFUNCTION(BlueprintCallable, Category="TonConnect")
     void CallGetMethod(const FString& Address, const FString& Method,
-                       const FOnTonGetMethodDelegate& OnResult);
+                       const TArray<FString>& Args, const FOnTonGetMethodDelegate& OnResult);
 
     // Build and send an arbitrary contract message from a UTonMessageSpec + value map.
     // The built cell is used as the payload BOC for a native TON transfer to ToAddress.

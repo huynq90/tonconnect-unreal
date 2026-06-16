@@ -10,6 +10,7 @@
 #include "Misc/DateTime.h"
 #include "Misc/Parse.h"
 #include "HAL/FileManager.h"
+#include "GenericPlatform/GenericPlatformHttp.h"
 
 const FString FTonApiClient::WalletListUrl = TEXT("https://raw.githubusercontent.com/ton-connect/wallets-list/refs/heads/main/wallets-v2.json");
 
@@ -412,11 +413,19 @@ void FTonApiClient::GetTransaction(const FString& TxHash, TFunction<void(bool, F
 }
 
 void FTonApiClient::CallGetMethod(const FString& Address, const FString& Method,
+                                   const TArray<FString>& Args,
                                    TFunction<void(bool, TMap<FString,FString>)> Callback)
 {
     FString Url = GetConfiguredTonApiUrl()
         + TEXT("/blockchain/accounts/") + Address
         + TEXT("/methods/") + Method;
+
+    // Append stack inputs as repeated ?args= query params (TonAPI runGetMethod).
+    for (int32 i = 0; i < Args.Num(); ++i)
+    {
+        Url += (i == 0 ? TEXT("?") : TEXT("&"));
+        Url += TEXT("args=") + FGenericPlatformHttp::UrlEncode(Args[i]);
+    }
 
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
     Request->SetURL(Url);

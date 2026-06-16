@@ -37,7 +37,7 @@ void ATonConnectDemoActor::BeginPlay()
 
     Log(TEXT("─────────────────────────────"), FColor::White, 60.f);
     Log(TEXT("TonConnect Demo Actor ready"),   FColor::Cyan,  60.f);
-    Log(TEXT("Keys:  1=Connect  2=Send  3=Disconnect  4=SendToSelf"), FColor::White, 60.f);
+    Log(TEXT("Keys:  1=Connect  2=Send  3=Disconnect  4=SendToSelf  5=ReadOnChain"), FColor::White, 60.f);
     Log(TEXT("─────────────────────────────"), FColor::White, 60.f);
 
     // AutoReceiveInput=Player0 (set in constructor) calls EnableInput in Super::BeginPlay,
@@ -48,6 +48,7 @@ void ATonConnectDemoActor::BeginPlay()
         InputComponent->BindKey(EKeys::Two,   IE_Pressed, this, &ATonConnectDemoActor::DemoSendTon);
         InputComponent->BindKey(EKeys::Three, IE_Pressed, this, &ATonConnectDemoActor::DemoDisconnect);
         InputComponent->BindKey(EKeys::Four,  IE_Pressed, this, &ATonConnectDemoActor::DemoSendToSelf);
+        InputComponent->BindKey(EKeys::Five,  IE_Pressed, this, &ATonConnectDemoActor::DemoReadOnChain);
     }
 
     // Already connected from a restored session — show info without re-pairing
@@ -189,6 +190,33 @@ void ATonConnectDemoActor::DemoDisconnect()
     TonConnect->Disconnect();
 }
 
+void ATonConnectDemoActor::DemoReadOnChain()
+{
+    if (!TonConnect) return;
+
+    FString Addr   = GetMethodAddress;
+    FString Method = GetMethodName;
+
+    // No contract configured → read the connected wallet's seqno (a simple read-only call).
+    if (Addr.IsEmpty())
+    {
+        if (TonConnect->GetState() != ETonConnectState::Connected)
+        {
+            Log(TEXT("Demo: set GetMethodAddress, or connect first (key 1) to read wallet seqno"), FColor::Yellow);
+            return;
+        }
+        Addr = TonConnect->GetConnectedWallet().Address;
+        if (Method.IsEmpty()) Method = TEXT("seqno");
+    }
+
+    Log(FString::Printf(TEXT("Demo: get-method '%s' on %s…"), *Method,
+        *UTonBlueprintLibrary::TruncateAddress(Addr, 6, 4)), FColor::Cyan);
+
+    FOnTonGetMethodDelegate Cb;
+    Cb.BindDynamic(this, &ATonConnectDemoActor::HandleGetMethodResult);
+    TonConnect->CallGetMethod(Addr, Method, GetMethodArgs, Cb);
+}
+
 // ─── Event handlers ───────────────────────────────────────────────────────────
 
 void ATonConnectDemoActor::HandleQRReady(UTexture2D* Tex, const FString& DeepLink)
@@ -262,6 +290,18 @@ void ATonConnectDemoActor::HandleAssetsUpdated(const FString& JettonInfo, int32 
         Log(FString::Printf(TEXT("  NFTs: %d item(s)"), NftCount), FColor::Silver);
     if (JettonInfo.IsEmpty() && NftCount == 0)
         Log(TEXT("  Assets: none"), FColor::Silver);
+}
+
+void ATonConnectDemoActor::HandleGetMethodResult(const FTonGetMethodResult& Result)
+{
+    if (!Result.bSuccess)
+    {
+        Log(FString::Printf(TEXT("⚠ get-method failed: %s"), *Result.ErrorMessage), FColor::Red);
+        return;
+    }
+    Log(FString::Printf(TEXT("✔ get-method returned %d value(s):"), Result.Stack.Num()), FColor::Green);
+    for (const TPair<FString,FString>& Kv : Result.Stack)
+        Log(FString::Printf(TEXT("   [%s] = %s"), *Kv.Key, *Kv.Value), FColor::Silver);
 }
 
 void ATonConnectDemoActor::HandleSendResult(const FTonSendResult& Result)

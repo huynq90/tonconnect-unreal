@@ -119,6 +119,7 @@ Minimal actor that prints state to the screen and reacts to number keys
 | `2` | Send 0.01 TON to a demo address |
 | `3` | Disconnect |
 | `4` | Send 0.01 TON to self |
+| `5` | Read on-chain data via a get-method (no gas/signing) |
 
 Enable **bAutoSendAfterConnect** in the actor's Details to auto-send ~2 s after connecting —
 handy for CI/smoke-testing with no key input.
@@ -156,43 +157,71 @@ SendTon("EQ...", "1000000000", "Hello TON", ← delegate callback)
 
 ### C++
 
+Dynamic delegates bind to `UFUNCTION` methods (not lambdas). Declare handlers on your class:
+
 ```cpp
+// UFUNCTION() void OnConnected(const FTonWalletInfo& Info);
+// UFUNCTION() void OnSendResult(const FTonSendResult& R);
+
 UTonConnectSubsystem* TC = GameInstance->GetSubsystem<UTonConnectSubsystem>();
-
-TC->OnConnected.AddLambda([](const FTonWalletInfo& Info)
-{
-    UE_LOG(LogTemp, Log, TEXT("Connected: %s"), *Info.Address);
-});
-
+TC->OnConnected.AddDynamic(this, &AMyActor::OnConnected);
+TC->OnSendResult.AddDynamic(this, &AMyActor::OnSendResult);   // fires for every send
 TC->Connect();
 
-// Later, after OnConnected:
-FOnTonSendResultDelegate CB;
-CB.BindLambda([](const FTonSendResult& R)
-{
-    if (R.Result == ETonSendResult::Approved)
-        MyGame->WaitForTransaction(R.TxHash);
-});
-TC->SendTon(TEXT("EQ..."), TEXT("1000000000"), TEXT("payment"), CB);
+// After OnConnected — send TON. The per-call callback is optional
+// (the OnSendResult multicast above also fires); bind a UFUNCTION for a per-call result:
+FOnTonSendResultDelegate SendCb;
+SendCb.BindDynamic(this, &AMyActor::OnSendResult);
+TC->SendTon(TEXT("EQ..."), TEXT("1000000000"), TEXT("payment"), SendCb);
 ```
 
 ### Estimating a fee before sending
 
 ```cpp
-// Instant heuristic (no network) — good for a placeholder while typing:
+// UFUNCTION() void OnFee(const FTonFeeEstimate& E);   // E.TotalFeeNano, E.bEmulated
+
+// Instant heuristic, no network (placeholder while typing):
 FString Rough = UTonBlueprintLibrary::EstimateFeeQuick(ETonTxKind::NativeTransfer);
 
-// Accurate on-chain emulation (debounced ~0.6s, falls back to the rough estimate on failure):
-FOnTonFeeEstimateDelegate FeeCB;
-FeeCB.BindLambda([](const FTonFeeEstimate& E)
-{
-    // E.TotalFeeNano, E.bEmulated (true = real emulation, false = fell back to rough)
-});
-TC->EstimateFeeEmulated(TEXT("EQ..."), TEXT("1000000000"), ETonTxKind::NativeTransfer, FeeCB);
+// Accurate on-chain emulation (debounced ~0.6s; falls back to the rough estimate on failure):
+FOnTonFeeEstimateDelegate FeeCb;
+FeeCb.BindDynamic(this, &AMyActor::OnFee);
+TC->EstimateFeeEmulated(TEXT("EQ..."), TEXT("1000000000"), ETonTxKind::NativeTransfer, FeeCb);
 // Jetton / NFT variants:
-//   TC->EstimateFeeEmulatedJetton(JettonWalletAddr, DestAddr, AmountBaseUnits, FeeCB);
-//   TC->EstimateFeeEmulatedNft(NftAddr, NewOwnerAddr, FeeCB);
+//   TC->EstimateFeeEmulatedJetton(JettonWalletAddr, DestAddr, AmountBaseUnits, FeeCb);
+//   TC->EstimateFeeEmulatedNft(NftAddr, NewOwnerAddr, FeeCb);
 ```
+
+### Reading on-chain data (get-methods)
+
+Run a contract **get-method** to read chain state directly — **no gas, no signing, no wallet
+connection needed**, just the contract address. Results arrive as a stack map (`"0"`, `"1"`, …):
+`num` → decimal string, `cell`/`slice` → BOC base64. `Args` are TVM stack inputs (decimal
+numbers or addresses); pass an empty array for no-arg methods.
+
+**Blueprint:** `Get Subsystem (TonConnectSubsystem)` → **Call Get Method** (`Address`,
+`Method`, `Args`, and a Custom Event bound to `On Result`) → read `Result.bSuccess`,
+`Result.Stack["0"]`, `Result.ErrorMessage`.
+
+**C++:**
+
+```cpp
+// UFUNCTION() void OnGetMethod(const FTonGetMethodResult& R);
+// // if (R.bSuccess) { FString Supply = R.Stack["0"]; }  else read R.ErrorMessage
+
+FOnTonGetMethodDelegate Cb;
+Cb.BindDynamic(this, &AMyActor::OnGetMethod);
+
+// No-arg method (get_jetton_data, get_nft_data, get_collection_data, seqno, …):
+TC->CallGetMethod(TEXT("EQ...jettonMaster"), TEXT("get_jetton_data"), {}, Cb);
+
+// Method WITH inputs — e.g. a jetton master's get_wallet_address(owner):
+TArray<FString> Args { TEXT("EQ...ownerAddress") };
+TC->CallGetMethod(TEXT("EQ...jettonMaster"), TEXT("get_wallet_address"), Args, Cb);
+```
+
+> The keyboard demo map binds **key `5`** to this — with no `GetMethodAddress` set on the
+> actor it reads the connected wallet's `seqno`. Works in mock mode too.
 
 ---
 
@@ -459,7 +488,7 @@ void AMyHud::HandleSendResult(const FTonSendResult& R)
 | `GetBalance` | TON balance in nanoTON |
 | `GetJettonBalances` | All jetton holdings with symbol, decimals, wallet address |
 | `GetNfts` | NFT items with collection address and metadata name |
-| `CallGetMethod` | Read-only smart contract method call, returns typed stack |
+| `CallGetMethod` | Read-only get-method call with optional `Args`, returns a stack map (no gas/signing) — see [Reading on-chain data](#reading-on-chain-data-get-methods) |
 
 ### Contract ABI
 | Feature | Detail |

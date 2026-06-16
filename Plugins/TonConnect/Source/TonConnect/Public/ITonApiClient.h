@@ -90,11 +90,13 @@ public:
         TFunction<void(bool /*bFound*/, FTonTxEntry)> Callback) = 0;
 
     // Call a get-method on a smart contract (read-only, no gas).
+    // Args are TVM stack inputs (decimal numbers or addresses); empty for no-arg methods.
     // Stack values are returned as a flat map: "0" → first value, "1" → second, etc.
     // num type → decimal string. cell/slice → BOC base64. null → empty string.
     virtual void CallGetMethod(
         const FString& Address,
         const FString& Method,
+        const TArray<FString>& Args,
         TFunction<void(bool /*bSuccess*/, TMap<FString,FString> /*Stack*/)> Callback) = 0;
 
     // Read the wallet's current seqno (get-method "seqno"). Returns 0 for a fresh wallet.

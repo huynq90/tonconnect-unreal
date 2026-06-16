@@ -19,6 +19,7 @@ class UUserWidget;
 //   2  — Send TON  (uses AutoSendAddress / AutoSendAmount)
 //   3  — Disconnect
 //   4  — Send 0.01 TON to self (connected wallet → itself)
+//   5  — Read on-chain data via a get-method (no gas, no signing)
 //
 // Enable mock in Project Settings → TonConnect → bUseMock = true
 // or launch with  -ton.mock
@@ -57,6 +58,19 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TonConnect|Demo")
     FString AutoSendComment = TEXT("TonConnect demo");
 
+    // ── Read on-chain (get-method) demo — key 5 ────────────────────────────────
+    // Contract to query. Leave empty to read the connected wallet's `seqno`.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TonConnect|Demo|GetMethod")
+    FString GetMethodAddress;
+
+    // Get-method name (read-only). With an empty address this reads `seqno`.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TonConnect|Demo|GetMethod")
+    FString GetMethodName = TEXT("seqno");
+
+    // Optional stack inputs (decimal numbers or addresses). Empty for no-arg methods.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TonConnect|Demo|GetMethod")
+    TArray<FString> GetMethodArgs;
+
     // ── Blueprint callable ────────────────────────────────────────────────────
 
     UFUNCTION(BlueprintCallable, Category="TonConnect|Demo")
@@ -72,6 +86,10 @@ public:
     UFUNCTION(BlueprintCallable, Category="TonConnect|Demo")
     void DemoDisconnect();
 
+    // Read on-chain data via a get-method (no gas, no signing, no wallet needed). Key 5.
+    UFUNCTION(BlueprintCallable, Category="TonConnect|Demo")
+    void DemoReadOnChain();
+
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -86,6 +104,7 @@ private:
     UFUNCTION() void HandleSendResult(const FTonSendResult& Result);
     UFUNCTION() void HandleAccountInfoUpdated(const FString& Version, const FString& BalanceNano);
     UFUNCTION() void HandleAssetsUpdated(const FString& JettonInfo, int32 NftCount);
+    UFUNCTION() void HandleGetMethodResult(const FTonGetMethodResult& Result);
 
     // ── Internal ──────────────────────────────────────────────────────────────
     UPROPERTY() UTonConnectSubsystem* TonConnect = nullptr;

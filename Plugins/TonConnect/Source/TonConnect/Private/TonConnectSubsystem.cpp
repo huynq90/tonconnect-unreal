@@ -726,6 +726,7 @@ void UTonConnectSubsystem::SendTransfer(const FString& ToAddress, const FString&
 }
 
 void UTonConnectSubsystem::CallGetMethod(const FString& Address, const FString& Method,
+                                          const TArray<FString>& Args,
                                           const FOnTonGetMethodDelegate& OnResult)
 {
     FTonGetMethodResult Fail;
@@ -737,7 +738,7 @@ void UTonConnectSubsystem::CallGetMethod(const FString& Address, const FString& 
     }
 
     TWeakObjectPtr<UTonConnectSubsystem> WeakThis = this;
-    ApiClient->CallGetMethod(Address, Method,
+    ApiClient->CallGetMethod(Address, Method, Args,
         [WeakThis, OnResult](bool bOk, TMap<FString,FString> Stack)
         {
             FTonGetMethodResult R;
