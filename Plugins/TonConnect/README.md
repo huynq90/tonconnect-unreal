@@ -195,9 +195,23 @@ TC->EstimateFeeEmulated(TEXT("EQ..."), TEXT("1000000000"), ETonTxKind::NativeTra
 ### Reading on-chain data (get-methods)
 
 Run a contract **get-method** to read chain state directly — **no gas, no signing, no wallet
-connection needed**, just the contract address. Results arrive as a stack map (`"0"`, `"1"`, …):
-`num` → decimal string, `cell`/`slice` → BOC base64. `Args` are TVM stack inputs (decimal
-numbers or addresses); pass an empty array for no-arg methods.
+connection needed**, just the contract address. `Method` is the get-method **name** (e.g.
+`get_jetton_data`); TonAPI resolves the method id. Results arrive as a stack map
+(`"0"`, `"1"`, …): `num` → decimal string, `cell`/`slice` → BOC base64.
+
+`Args` are plain **strings** — TonAPI parses each into a TVM stack value server-side, so you
+**don't pack cells client-side**. Pass an empty array for no-arg methods. Accepted formats:
+
+| Arg string | Parsed as |
+|---|---|
+| `"100500"` (decimal) | tinyint |
+| `"0xfa01d7…"` (0x-hex) | int257 |
+| `"0:6e73…"` or `"EQ…"` (address) | slice (e.g. `get_wallet_address(owner)`) |
+| `"te6cc…"` (base64 BOC) | cell |
+| `"b5ee9c…"` (hex BOC) | slice |
+| `"NaN"` / `"Null"` | NaN / Null |
+
+(The plugin URL-encodes each arg into the `?args=` query automatically.)
 
 **Blueprint:** `Get Subsystem (TonConnectSubsystem)` → **Call Get Method** (`Address`,
 `Method`, `Args`, and a Custom Event bound to `On Result`) → read `Result.bSuccess`,

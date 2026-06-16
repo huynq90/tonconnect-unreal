@@ -95,7 +95,8 @@ public:
                             TFunction<void(bool bFound, FTonTxEntry)> OnResult);
 
     // Call a smart-contract get-method (read-only — no gas, no signing, no wallet needed).
-    // Args are TVM stack inputs (decimal numbers or addresses); leave empty for no-arg methods.
+    // Method is the get-method NAME (e.g. "get_jetton_data"). Args are plain strings TonAPI
+    // parses into stack values (decimal/0x-hex int, address → slice, BOC → cell); empty = no args.
     // Stack values returned indexed "0","1",… as decimal strings or BOC base64.
     UFUNCTION(BlueprintCallable, Category="TonConnect")
     void CallGetMethod(const FString& Address, const FString& Method,

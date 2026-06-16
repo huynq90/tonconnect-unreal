@@ -90,7 +90,8 @@ public:
         TFunction<void(bool /*bFound*/, FTonTxEntry)> Callback) = 0;
 
     // Call a get-method on a smart contract (read-only, no gas).
-    // Args are TVM stack inputs (decimal numbers or addresses); empty for no-arg methods.
+    // Args are plain strings TonAPI parses into stack values (decimal or 0x-hex int,
+    // address → slice, base64/hex BOC → cell/slice); empty for no-arg methods.
     // Stack values are returned as a flat map: "0" → first value, "1" → second, etc.
     // num type → decimal string. cell/slice → BOC base64. null → empty string.
     virtual void CallGetMethod(
